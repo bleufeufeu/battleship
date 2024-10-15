@@ -1,0 +1,13 @@
+.square {
+    box-sizing: border-box;
+    border: 0.25px solid black;
+}
+
+#player1-container, #player2-container {
+    display: flex;
+    background-color: white;
+    width: 480px;
+    height: 480px;
+    justify-content: center;
+    position: relative;
+}
