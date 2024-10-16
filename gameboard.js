@@ -26,6 +26,10 @@ export class gameBoard {
         return finalBoard;
     }
 
+    resetBoard() {
+        this.board = this.createBoard(10);
+    }
+
     getSquare(x, y, arr) {
         if (x >= arr.length || y >= arr.length || x < 0 || y < 0) {
             return null;

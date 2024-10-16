@@ -1,13 +1,120 @@
+@font-face {
+    font-family: BlackOpsOne;
+    src: url(static/fonts/BlackOpsOne-Regular.ttf);
+}
+
+@font-face {
+    font-family: SpecialElite;
+    src: url(static/fonts/SpecialElite-Regular.ttf);
+}
+
+:root {
+    --dark-blue: #201E43;
+    --board-blue: #134B70;
+    --tile-blue: #508C9B;
+    --gray: #EEEEEE;
+    --hit-orange: #EC8305;
+}
+
+body {
+    font-family: SpecialElite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--dark-blue);
+    color: white;
+}
+
+h1 {
+    font-family: BlackOpsOne;
+    font-size: 3rem;
+}
+
 .square {
     box-sizing: border-box;
     border: 0.25px solid black;
+    background-color: var(--board-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.square:hover {
+    filter: brightness(1.3);
+    cursor: crosshair;
+}
+
+.shipHit:hover, .misfired:hover {
+    filter: none;
+    cursor: default;
 }
 
 #player1-container, #player2-container {
     display: flex;
-    background-color: white;
-    width: 480px;
-    height: 480px;
+    width: 100%;
+    height: 100%;
     justify-content: center;
     position: relative;
+}
+
+#player1-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+#board-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 15vw;
+}
+
+#board-container > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hasShip {
+    background-color: #6C22A6;
+}
+
+.hasShip::after {
+    content: "🛥️";
+}
+
+.shipHit {
+    background-color: var(--hit-orange);
+}
+
+.shipHit::after {
+    content: "💥";
+}
+
+.misfired {
+    background-color: var(--tile-blue);
+    font-size: 2rem;
+    font-family: none;
+}
+
+.misfired::after {
+    content: "•";
+}
+
+button {
+    font-family: SpecialElite;
+    font-size: 1.15rem;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+button:hover {
+    background-color: rgba(51, 59, 60, 0.5);
+    cursor: pointer;
 }

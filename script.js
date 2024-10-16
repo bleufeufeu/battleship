@@ -19,12 +19,15 @@ const createGrid = (player) => {
 }
 
 const gameLogic = (() => {
-    const playerHuman = new Player();
-    const playerCPU = new Player();
-    playerCPU.isCPU = true;
+    let playerHuman = new Player();
+    let playerCPU = new Player();
 
     let gameOver = false;
 
+    const resetPlayers = () => {
+        playerHuman.gameboard.resetBoard();
+        playerCPU.gameboard.resetBoard();
+    }
 
     const initShips = () => {
         let shipOrder = [5, 4, 3, 3, 2]
@@ -53,7 +56,6 @@ const gameLogic = (() => {
         }
     }
 
-
     const playHumanTurn = (x, y) => {
         if (gameOver || playerCPU.gameboard.board[x][y].beenHit) return;
 
@@ -80,28 +82,7 @@ const gameLogic = (() => {
         }
     }
 
-    // const playCPUTurn = () => {
-    //     if (gameOver || currentPlayer !== playerCPU) return;
-
-    //     let randX, randY;
-
-    //     do {
-    //         randX = Math.floor(Math.random() * 10);
-    //         randY = Math.floor(Math.random() * 10);
-
-    //     } while (playerHuman.gameboard.board[randX][randY].beenHit);
-
-    //     playerHuman.gameboard.receiveAttack(randX, randY);
-
-    //     if (playerHuman.gameboard.allSunk()) {
-    //         gameOver = true;
-    //         return;
-    //     }
-
-    //     switchPlayer();
-    // }
-
-    return { playerHuman, playerCPU, initShips, playHumanTurn }
+    return { playerHuman, playerCPU, resetPlayers, initShips, playHumanTurn }
 })();
 
 const displayController = (() => {
@@ -114,6 +95,7 @@ const displayController = (() => {
     }
 
     const clickCell = (x, y) => {
+        hideButtons();
         gameLogic.playHumanTurn(x, y);
         displayCPUBoard();
 
@@ -132,19 +114,35 @@ const displayController = (() => {
         }
     }
 
+    const resetDisplay = () => {
+        document.querySelector("#player1-container").innerHTML = "";
+        document.querySelector("#player2-container").innerHTML = "";
+    
+        createGrid("player1");
+        createGrid("player2");
+    
+        initClicks();
+    };
+
     const displayHumanBoard = () => {
         const humanBoard = gameLogic.playerHuman.gameboard.board;
         for (let i = 0; i < humanBoard.length; i++) {
             for (let j = 0; j < humanBoard[i].length; j++) {
                 const tile = findSquare(i, j, "player1");
                 if (humanBoard[i][j].hasShip) {
-                    tile.textContent = "O";
+                    if (!tile.classList.contains("hasShip")) {
+                        tile.classList.add("hasShip");
+                    }
                 }
-                if (humanBoard[i][j].beenHit) {
-                    tile.textContent = "X";
+                if (humanBoard[i][j].beenHit && humanBoard[i][j].hasShip) {
+                    if (!tile.classList.contains("shipHit")) {
+                        tile.classList.add("shipHit");
+                    }
                 }
                 if (humanBoard[i][j].misfired) {
-                    tile.textContent = "M"
+                    if (!tile.classList.contains("misfired")) {
+                        tile.classList.add("misfired");
+                    }
                 }
             }
         }
@@ -155,15 +153,33 @@ const displayController = (() => {
         for (let i = 0; i < cpuBoard.length; i++) {
             for (let j = 0; j < cpuBoard[i].length; j++) {
                 const tile = findSquare(i, j, "player2");
-                if (cpuBoard[i][j].beenHit) {
-                    tile.textContent = "X";
+                if (cpuBoard[i][j].beenHit && cpuBoard[i][j].hasShip) {
+                    if (!tile.classList.contains("shipHit")) {
+                        tile.classList.add("shipHit");
+                    }
                 }
                 if (cpuBoard[i][j].misfired) {
-                    tile.textContent = "M"
+                    if (!tile.classList.contains("misfired")) {
+                        tile.classList.add("misfired");
+                    }
                 }
             }
         }
     }
+
+    const randomButton = document.querySelector("#randomButton");
+
+    const hideButtons = () => {
+        randomButton.style.display = "none";
+    }
+
+    randomButton.addEventListener("click", () => {
+        resetDisplay();
+        gameLogic.resetPlayers();
+
+        gameLogic.initShips();
+        displayHumanBoard();
+    });
 
     const init = () => {
         createGrid("player1");
@@ -173,21 +189,9 @@ const displayController = (() => {
 
         displayHumanBoard();
         displayCPUBoard();
-
-
     }
 
     return { init }
 })();
-
-
-// createGrid("player1");
-// createGrid("player2");
-// //gameLogic.playerHuman.gameboard.placeShip(3, 4, length = 3, "horizontal");
-// //gameLogic.playerHuman.gameboard.placeShip(4, 5, length = 3, "horizontal");
-// gameLogic.initShips();
-// gameLogic.playerHuman.gameboard.receiveAttack(3, 4);
-// gameLogic.playerHuman.gameboard.receiveAttack(9, 0);
-// displayController.displayBoard();
 
 displayController.init();
